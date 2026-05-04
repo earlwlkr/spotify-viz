@@ -6,7 +6,7 @@ export default function SignOutButton() {
   const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
-    setIsAuthed(document.cookie.includes("spotify_access_token"));
+    setIsAuthed(document.cookie.includes("spotify_authed"));
   }, []);
 
   if (!isAuthed) return null;

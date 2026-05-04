@@ -32,6 +32,12 @@ export async function GET(req: NextRequest) {
     path: "/",
   });
   response.cookies.delete("spotify_auth_state");
+  response.cookies.set("spotify_authed", "true", {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: tokens.expires_in,
+    path: "/",
+  });
 
   return response;
 }

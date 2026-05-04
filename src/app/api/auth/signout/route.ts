@@ -1,10 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  const response = NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"));
+export async function GET(req: NextRequest) {
+  const response = NextResponse.redirect(new URL("/", req.url));
+
   response.cookies.delete("spotify_access_token");
   response.cookies.delete("spotify_refresh_token");
   response.cookies.delete("spotify_expires_at");
-  response.cookies.delete("spotify_auth_state");
+  response.cookies.delete("spotify_authed");
+
   return response;
 }
