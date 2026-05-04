@@ -166,7 +166,7 @@ export function generateEstimatedFeatures(track: Track): AudioFeatures {
 async function fetchWithTimeout<T>(
   url: string,
   options: RequestInit = {},
-  timeoutMs = 8000
+  timeoutMs = 6000
 ): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -188,12 +188,16 @@ export async function lookupMusicBrainz(isrc: string, delayMs: number): Promise<
     const data = await fetchWithTimeout<{
       isrc: string;
       recordings?: Array<{ id: string; title: string }>;
-    }>(url, {
-      headers: {
-        "User-Agent": "SpotifyViz/1.0 (spotify-viz-app)",
-        Accept: "application/json",
+    }>(
+      url,
+      {
+        headers: {
+          "User-Agent": "SpotifyViz/1.0 (spotify-viz-app)",
+          Accept: "application/json",
+        },
       },
-    });
+      1500
+    );
     return data.recordings?.[0]?.id ?? null;
   } catch (err) {
     console.warn(`[MusicBrainz] ISRC ${isrc} lookup failed:`, err);
@@ -204,9 +208,13 @@ export async function lookupMusicBrainz(isrc: string, delayMs: number): Promise<
 export async function lookupAcousticBrainz(mbid: string): Promise<AudioFeatures | null> {
   try {
     const url = `https://acousticbrainz.org/api/v1/${encodeURIComponent(mbid)}/high-level`;
-    const data = await fetchWithTimeout<AcousticBrainzHighLevel>(url, {
-      headers: { Accept: "application/json" },
-    });
+    const data = await fetchWithTimeout<AcousticBrainzHighLevel>(
+      url,
+      {
+        headers: { Accept: "application/json" },
+      },
+      3000
+    );
 
     const hl = data.highlevel || {};
 
@@ -243,12 +251,15 @@ export async function lookupAcousticBrainz(mbid: string): Promise<AudioFeatures 
   }
 }
 
-export async function getAcousticBrainzFeatures(tracks: Track[]): Promise<{
+export async function getAcousticBrainzFeatures(
+  tracks: Track[],
+  signal?: AbortSignal
+): Promise<{
   features: AudioFeatures[];
   acousticBrainzUsed: boolean;
 }> {
-  const MAX_TRACKS = 15;
-  const STAGGER_MS = 400;
+  const MAX_TRACKS = 3;
+  const STAGGER_MS = 0;
 
   const tracksWithIsrc = tracks.filter((t) => t.external_ids?.isrc).slice(0, MAX_TRACKS);
 
@@ -260,20 +271,31 @@ export async function getAcousticBrainzFeatures(tracks: Track[]): Promise<{
 
   // Staggered ISRC → MBID lookups
   for (let i = 0; i < tracksWithIsrc.length; i++) {
+    if (signal?.aborted) break;
     const track = tracksWithIsrc[i];
     const isrc = track.external_ids!.isrc!;
     if (i > 0) await new Promise((r) => setTimeout(r, STAGGER_MS));
+    if (signal?.aborted) break;
     const mbid = await lookupMusicBrainz(isrc, 0);
     if (mbid) mbidMap.set(track.id, mbid);
   }
 
   console.log(`[AcousticBrainz] Found ${mbidMap.size} MBIDs`);
 
+  if (signal?.aborted) {
+    console.log("[AcousticBrainz] Aborted after ISRC lookups, returning estimates");
+    return {
+      features: tracks.map((track) => generateEstimatedFeatures(track)),
+      acousticBrainzUsed: false,
+    };
+  }
+
   const spotifyToFeatures = new Map<string, AudioFeatures>();
 
   // Parallel MBID → AcousticBrainz lookups (no rate limit issues here)
   await Promise.all(
     Array.from(mbidMap.entries()).map(async ([spotifyId, mbid]) => {
+      if (signal?.aborted) return;
       const features = await lookupAcousticBrainz(mbid);
       if (features) {
         features.id = spotifyId;

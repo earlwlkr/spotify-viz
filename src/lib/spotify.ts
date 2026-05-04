@@ -32,16 +32,24 @@ async function getValidToken(): Promise<string> {
 
 async function spotifyFetch<T>(path: string): Promise<T> {
   const token = await getValidToken();
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Spotify API error: ${res.status} ${err}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Spotify API error: ${res.status} ${err}`);
+    }
+
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return res.json() as Promise<T>;
 }
 
 // --- Types ---
@@ -111,7 +119,7 @@ export async function getRecentlyPlayed(
 ): Promise<RecentlyPlayedResponse> {
   const allItems: RecentlyPlayedItem[] = [];
   let before: string | undefined;
-  const MAX_PAGES = 5;
+  const MAX_PAGES = 3;
 
   for (let page = 0; page < MAX_PAGES; page++) {
     const params = new URLSearchParams({ limit: String(limit) });

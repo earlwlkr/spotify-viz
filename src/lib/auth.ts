@@ -41,14 +41,19 @@ export function getAuthUrl(state: string, redirectUri = DEFAULT_REDIRECT_URI) {
 async function fetchWithRetry(
   url: string,
   init: RequestInit,
-  retries = 3
+  retries = 3,
+  timeoutMs = 10000
 ): Promise<Response> {
   let lastErr: Error | undefined;
   for (let i = 0; i < retries; i++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(url, init);
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      clearTimeout(timeout);
       return res;
     } catch (err) {
+      clearTimeout(timeout);
       lastErr = err instanceof Error ? err : new Error(String(err));
       if (i < retries - 1) {
         const delay = 500 * (i + 1);
