@@ -1,4 +1,4 @@
-import { getTopTracks, getAudioFeatures } from "@/lib/spotify";
+import { getTopTracks } from "@/lib/spotify";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import ScatterPlot from "@/components/viz/ScatterPlot";
@@ -18,33 +18,24 @@ export default async function MoodWeatherPage({
   const timeRange = (range as "short_term" | "medium_term" | "long_term") || "medium_term";
 
   const top = await getTopTracks(timeRange, 50);
-  const ids = top.items.map((t) => t.id);
-  const features = await getAudioFeatures(ids);
-
-  const points = top.items
-    .map((track, i) => {
-      const f = features.audio_features[i];
-      if (!f) return null;
-      return {
-        x: f.energy,
-        y: f.valence,
-        label: `${track.name} — ${track.artists[0].name}`,
-        color: `hsl(${f.valence * 120}, 70%, 50%)`,
-      };
-    })
-    .filter(Boolean);
+  const points = top.items.map((track, i) => ({
+    x: i + 1,
+    y: track.popularity,
+    label: `${track.name} — ${track.artists[0].name}`,
+    color: `hsl(${120 - track.popularity * 1.2}, 70%, 50%)`,
+  }));
 
   return (
     <div>
       <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 700 }}>Mood Weather</h1>
       <p style={{ color: "#888", marginBottom: "1rem" }}>
-        Your top tracks plotted by energy (x) and valence / happiness (y).
+        Your top tracks plotted by rank and Spotify popularity.
       </p>
       <TimeRangeSelector />
       <ScatterPlot
-        data={points as { x: number; y: number; label: string; color: string }[]}
-        xLabel="Energy"
-        yLabel="Valence"
+        data={points}
+        xLabel="Top track rank"
+        yLabel="Popularity"
       />
     </div>
   );

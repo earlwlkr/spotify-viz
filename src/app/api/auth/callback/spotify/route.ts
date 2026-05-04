@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { exchangeCode } from "@/lib/auth";
+import { exchangeCode, getRedirectUri } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid state" }, { status: 400 });
   }
 
-  const tokens = await exchangeCode(code);
+  const tokens = await exchangeCode(code, getRedirectUri(new URL(req.url).origin));
 
   const response = NextResponse.redirect(new URL("/", req.url));
   response.cookies.set("spotify_access_token", tokens.access_token, {

@@ -3,7 +3,9 @@ const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
-const REDIRECT_URI = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/spotify`;
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://127.0.0.1:3000";
+const APP_ORIGIN = new URL(APP_URL).origin;
+const DEFAULT_REDIRECT_URI = `${APP_ORIGIN}/api/auth/callback/spotify`;
 
 export const SCOPES = [
   "user-read-private",
@@ -13,22 +15,26 @@ export const SCOPES = [
   "user-library-read",
 ];
 
-export function getAuthUrl(state: string) {
+export function getRedirectUri(origin: string) {
+  return `${origin}/api/auth/callback/spotify`;
+}
+
+export function getAuthUrl(state: string, redirectUri = DEFAULT_REDIRECT_URI) {
   const params = new URLSearchParams({
     response_type: "code",
     client_id: CLIENT_ID,
     scope: SCOPES.join(" "),
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: redirectUri,
     state,
   });
   return `${SPOTIFY_AUTH_URL}?${params.toString()}`;
 }
 
-export async function exchangeCode(code: string) {
+export async function exchangeCode(code: string, redirectUri = DEFAULT_REDIRECT_URI) {
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     code,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: redirectUri,
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
   });

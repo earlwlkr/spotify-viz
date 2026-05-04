@@ -1,4 +1,4 @@
-import { getTopTracks, getTopArtists, getAudioFeatures, getRecentlyPlayed } from "@/lib/spotify";
+import { getTopTracks, getTopArtists, getRecentlyPlayed } from "@/lib/spotify";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import BarMeter from "@/components/viz/BarMeter";
@@ -15,18 +15,16 @@ export default async function VibeCheckPage() {
     getRecentlyPlayed(50),
   ]);
 
-  const ids = topTracks.items.map((t) => t.id);
-  const features = await getAudioFeatures(ids);
-
-  const validFeatures = features.audio_features.filter(Boolean) as NonNullable<
-    (typeof features.audio_features)[0]
-  >[];
-
-  const avg = (key: keyof (typeof validFeatures)[0]) =>
-    validFeatures.reduce((sum, f) => sum + (f[key] as number), 0) / validFeatures.length;
-
-  const totalMs = recent.items.reduce((sum, item) => sum + (item.track as any).duration_ms || 0, 0);
-  const hours = Math.round(totalMs / 1000 / 60 / 60 * 10) / 10;
+  const avgPopularity =
+    topTracks.items.reduce((sum, track) => sum + track.popularity, 0) / topTracks.items.length / 100;
+  const avgDuration =
+    topTracks.items.reduce((sum, track) => sum + track.duration_ms, 0) / topTracks.items.length;
+  const recentUniqueArtists = new Set(
+    recent.items.flatMap((item) => item.track.artists.map((artist) => artist.name))
+  ).size;
+  const topArtistGenreCount = new Set(topArtists.items.flatMap((artist) => artist.genres)).size;
+  const totalMs = recent.items.reduce((sum, item) => sum + item.track.duration_ms, 0);
+  const hours = Math.round((totalMs / 1000 / 60 / 60) * 10) / 10;
 
   return (
     <div>
@@ -34,14 +32,12 @@ export default async function VibeCheckPage() {
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>Your listening profile at a glance.</p>
 
       <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
-        {/* Audio features */}
         <div style={{ background: "#141414", borderRadius: 12, padding: "1.25rem", border: "1px solid #1f1f1f" }}>
-          <h3 style={{ marginBottom: "1rem", fontWeight: 600 }}>Audio Profile</h3>
-          <BarMeter label="Energy" value={avg("energy")} color="#f59e0b" />
-          <BarMeter label="Valence (Happiness)" value={avg("valence")} color="#1db954" />
-          <BarMeter label="Danceability" value={avg("danceability")} color="#3b82f6" />
-          <BarMeter label="Acousticness" value={avg("acousticness")} color="#a855f7" />
-          <BarMeter label="Instrumentalness" value={avg("instrumentalness")} color="#ec4899" />
+          <h3 style={{ marginBottom: "1rem", fontWeight: 600 }}>Library Signals</h3>
+          <BarMeter label="Average popularity" value={avgPopularity} color="#1db954" />
+          <BarMeter label="Artist variety" value={Math.min(recentUniqueArtists / 50, 1)} color="#3b82f6" />
+          <BarMeter label="Genre variety" value={Math.min(topArtistGenreCount / 80, 1)} color="#a855f7" />
+          <BarMeter label="Track length" value={Math.min(avgDuration / 300000, 1)} color="#f59e0b" />
         </div>
 
         {/* Top artists */}

@@ -51,24 +51,12 @@ export interface Track {
   name: string;
   artists: { name: string }[];
   album: { images: { url: string; width: number; height: number }[] };
-}
-
-export interface AudioFeatures {
-  id: string;
-  danceability: number;
-  energy: number;
-  valence: number;
-  tempo: number;
-  acousticness: number;
-  instrumentalness: number;
+  duration_ms: number;
+  popularity: number;
 }
 
 export interface TopTracksResponse {
   items: Track[];
-}
-
-export interface AudioFeaturesResponse {
-  audio_features: (AudioFeatures | null)[];
 }
 
 // --- Helpers ---
@@ -78,11 +66,6 @@ export function getTopTracks(
   limit = 50
 ) {
   return spotifyFetch<TopTracksResponse>(`/me/top/tracks?time_range=${timeRange}&limit=${limit}`);
-}
-
-export function getAudioFeatures(trackIds: string[]) {
-  const ids = trackIds.join(",");
-  return spotifyFetch<AudioFeaturesResponse>(`/audio-features?ids=${ids}`);
 }
 
 export interface RecentlyPlayedItem {
@@ -114,17 +97,4 @@ export function getTopArtists(
   limit = 50
 ) {
   return spotifyFetch<TopArtistsResponse>(`/me/top/artists?time_range=${timeRange}&limit=${limit}`);
-}
-
-export interface RecommendationTrack extends Track {
-  preview_url: string | null;
-}
-
-export interface RecommendationsResponse {
-  tracks: RecommendationTrack[];
-}
-
-export function getRecommendations(seedTrackIds: string[], limit = 20) {
-  const seeds = seedTrackIds.slice(0, 5).join(",");
-  return spotifyFetch<RecommendationsResponse>(`/recommendations?seed_tracks=${seeds}&limit=${limit}`);
 }
