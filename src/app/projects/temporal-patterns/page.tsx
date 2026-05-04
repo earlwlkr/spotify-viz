@@ -48,11 +48,11 @@ export default async function TemporalPatternsPage() {
       <div style={{ display: "grid", gap: "2rem", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
         <div>
           <h3 style={{ marginBottom: "0.75rem", fontWeight: 600, fontSize: "1rem" }}>Hour of Day</h3>
-          <BarChart data={hourData} width={500} height={260} />
+          <BarChart data={hourData} />
         </div>
         <div>
           <h3 style={{ marginBottom: "0.75rem", fontWeight: 600, fontSize: "1rem" }}>Day of Week</h3>
-          <BarChart data={dayData} width={500} height={260} />
+          <BarChart data={dayData} />
         </div>
       </div>
 

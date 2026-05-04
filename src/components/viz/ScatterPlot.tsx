@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useContainerSize } from "@/hooks/useContainerSize";
 
 interface Point {
   x: number;
@@ -21,11 +22,19 @@ export default function ScatterPlot({
   data,
   xLabel = "x",
   yLabel = "y",
-  width = 600,
-  height = 400,
+  width: propWidth,
+  height: propHeight,
 }: Props) {
   const [hovered, setHovered] = useState<Point | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const { ref, width: measuredW, height: measuredH } = useContainerSize(1.5, 240);
+
+  const width = propWidth ?? measuredW;
+  const height = propHeight ?? measuredH;
+
+  if (width === 0 || data.length === 0) {
+    return <div ref={ref} style={{ width: "100%", height: 240, background: "#0f0f0f", borderRadius: 8 }} />;
+  }
 
   const padding = 48;
   const chartW = width - padding * 2;
@@ -44,11 +53,11 @@ export default function ScatterPlot({
     height - padding - ((v - minY) / (maxY - minY || 1)) * chartH;
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <div ref={ref} style={{ position: "relative", width: "100%" }}>
       <svg
         width={width}
         height={height}
-        style={{ background: "#0f0f0f", borderRadius: 8 }}
+        style={{ background: "#0f0f0f", borderRadius: 8, maxWidth: "100%", display: "block" }}
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });

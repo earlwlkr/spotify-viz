@@ -1,5 +1,7 @@
 "use client";
 
+import { useContainerSize } from "@/hooks/useContainerSize";
+
 interface DayData {
   date: string;
   count: number;
@@ -36,18 +38,18 @@ function formatISO(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-export default function Heatmap({ data, width = 600 }: Props) {
-  const maxCount = Math.max(...data.map((d) => d.count), 1);
-  const cellSize = Math.min(22, Math.floor((width - 60) / 7));
-  const gap = 4;
+export default function Heatmap({ data, width: propWidth }: Props) {
+  const { ref, width: measuredW } = useContainerSize(4, 180);
+  const containerWidth = propWidth ?? measuredW;
 
-  const colorForCount = (count: number, outOfRange: boolean) => {
-    if (outOfRange) return "#0f0f0f";
-    if (count === 0) return "#1a1a1a";
-    const intensity = Math.min(count / maxCount, 1);
-    const g = Math.floor(50 + intensity * 150);
-    return `rgb(${Math.floor(intensity * 29)}, ${g}, ${Math.floor(intensity * 84)})`;
-  };
+  if (containerWidth === 0 || data.length === 0) {
+    return <div ref={ref} style={{ width: "100%", height: 180, background: "#0f0f0f", borderRadius: 8 }} />;
+  }
+
+  const maxCount = Math.max(...data.map((d) => d.count), 1);
+  const gap = 3;
+  const labelWidth = 28;
+  const availableW = containerWidth - labelWidth - 16;
 
   const counts = new Map(data.map((d) => [d.date, d.count]));
 
@@ -61,6 +63,10 @@ export default function Heatmap({ data, width = 600 }: Props) {
   const endMonday = getMondayOfWeek(latest);
   const totalWeeks =
     Math.round((endMonday.getTime() - startMonday.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
+
+  const cellSize = Math.max(10, Math.min(22, Math.floor((availableW - (totalWeeks - 1) * gap) / totalWeeks)));
+  const svgWidth = labelWidth + totalWeeks * (cellSize + gap) + 12;
+  const svgHeight = 7 * (cellSize + gap) + 24;
 
   const grid: { date: string; count: number; outOfRange: boolean }[][] = [];
   for (let w = 0; w < totalWeeks; w++) {
@@ -79,24 +85,29 @@ export default function Heatmap({ data, width = 600 }: Props) {
     grid.push(week);
   }
 
-  const svgWidth = grid.length * (cellSize + gap) + 40;
-  const svgHeight = 7 * (cellSize + gap) + 30;
+  const colorForCount = (count: number, outOfRange: boolean) => {
+    if (outOfRange) return "#0f0f0f";
+    if (count === 0) return "#1a1a1a";
+    const intensity = Math.min(count / maxCount, 1);
+    const g = Math.floor(50 + intensity * 150);
+    return `rgb(${Math.floor(intensity * 29)}, ${g}, ${Math.floor(intensity * 84)})`;
+  };
 
   return (
-    <div style={{ position: "relative", width: "100%", overflowX: "auto" }}>
+    <div ref={ref} style={{ width: "100%", overflowX: "auto" }}>
       <svg
         width={svgWidth}
         height={svgHeight}
-        style={{ background: "#0f0f0f", borderRadius: 8, padding: 12, display: "block", margin: "0 auto" }}
+        style={{ background: "#0f0f0f", borderRadius: 8, padding: 10, display: "block", margin: "0 auto" }}
       >
         {/* Day labels */}
         {DAY_LABELS.map((day, i) => (
           <text
             key={day}
-            x={4}
-            y={20 + i * (cellSize + gap) + cellSize / 2 + 4}
+            x={2}
+            y={18 + i * (cellSize + gap) + cellSize / 2 + 3}
             fill="#666"
-            fontSize={10}
+            fontSize={Math.max(8, cellSize - 2)}
           >
             {day}
           </text>
@@ -106,11 +117,11 @@ export default function Heatmap({ data, width = 600 }: Props) {
           week.map((day, di) => (
             <rect
               key={`${wi}-${di}`}
-              x={40 + wi * (cellSize + gap)}
-              y={16 + di * (cellSize + gap)}
+              x={labelWidth + wi * (cellSize + gap)}
+              y={14 + di * (cellSize + gap)}
               width={cellSize}
               height={cellSize}
-              rx={3}
+              rx={2}
               fill={colorForCount(day.count, day.outOfRange)}
               opacity={day.outOfRange ? 0.2 : 1}
             >

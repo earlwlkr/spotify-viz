@@ -14,6 +14,8 @@ interface Props {
   xKey: keyof AudioFeatures;
   yKey: keyof AudioFeatures;
   variant: Variant;
+  width?: number;
+  height?: number;
 }
 
 function getColor(variant: Variant, f: AudioFeatures): string {
@@ -31,6 +33,8 @@ export default function ProgressiveScatterPlot({
   xKey,
   yKey,
   variant,
+  width,
+  height,
 }: Props) {
   const { features, acousticBrainz, loading, error } = useProgressiveAudioFeatures(
     tracks,
@@ -52,7 +56,7 @@ export default function ProgressiveScatterPlot({
 
   return (
     <div>
-      <ScatterPlot data={points} xLabel={xLabel} yLabel={yLabel} />
+      <ScatterPlot data={points} xLabel={xLabel} yLabel={yLabel} width={width} height={height} />
       {loading && (
         <p style={{ color: "#666", fontSize: "0.75rem", marginTop: "0.5rem" }}>
           Enriching with AcousticBrainz data…

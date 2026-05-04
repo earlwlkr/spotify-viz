@@ -45,11 +45,11 @@ export default async function MoodJourneyPage() {
       <div style={{ display: "grid", gap: "2rem", marginBottom: "2rem" }}>
         <div>
           <h3 style={{ marginBottom: "0.75rem", fontWeight: 600, fontSize: "1rem" }}>Energy Arc</h3>
-          <TimelineChart data={energyPoints} xLabel="Play order" yLabel="Energy" width={700} height={280} />
+          <TimelineChart data={energyPoints} xLabel="Play order" yLabel="Energy" />
         </div>
         <div>
           <h3 style={{ marginBottom: "0.75rem", fontWeight: 600, fontSize: "1rem" }}>Valence Arc</h3>
-          <TimelineChart data={valencePoints} xLabel="Play order" yLabel="Valence" width={700} height={280} />
+          <TimelineChart data={valencePoints} xLabel="Play order" yLabel="Valence" />
         </div>
       </div>
 

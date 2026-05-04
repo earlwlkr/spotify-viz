@@ -41,7 +41,7 @@ export default async function SonicSignaturePage({
       </p>
       <TimeRangeSelector />
       <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap", alignItems: "flex-start" }}>
-        <RadarChart data={radarData} width={360} height={360} />
+        <RadarChart data={radarData} />
         <div style={{ flex: 1, minWidth: 260, maxWidth: 400 }}>
           {radarData.map((d) => (
             <div key={d.label} style={{ marginBottom: "0.75rem" }}>

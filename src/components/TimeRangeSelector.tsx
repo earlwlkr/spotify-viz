@@ -14,7 +14,7 @@ export default function TimeRangeSelector() {
   const current = searchParams.get("range") || "medium_term";
 
   return (
-    <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+    <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
       {RANGES.map((r) => (
         <button
           key={r.value}

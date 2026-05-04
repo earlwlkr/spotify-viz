@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import SignOutButton from "./SignOutButton";
 
 const NAV_ITEMS = [
@@ -19,18 +20,33 @@ const NAV_ITEMS = [
   { href: "/projects/listening-efficiency", label: "Efficiency" },
 ];
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div style={{ minHeight: "100vh", background: "#0a0a0a", color: "#e5e5e5" }}>
       <header
         style={{
           borderBottom: "1px solid #1f1f1f",
-          padding: "1rem 2rem",
+          padding: isMobile ? "0.75rem 1rem" : "1rem 2rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "0.5rem",
         }}
       >
         <Link
@@ -44,17 +60,48 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           Spotify Viz
         </Link>
-        <nav style={{ display: "flex", gap: "1.25rem", fontSize: "0.85rem", alignItems: "center" }}>
+
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#e5e5e5",
+              fontSize: "1.25rem",
+              cursor: "pointer",
+              padding: "0.25rem 0.5rem",
+              lineHeight: 1,
+            }}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+        )}
+
+        <nav
+          style={{
+            display: isMobile ? (menuOpen ? "flex" : "none") : "flex",
+            gap: isMobile ? "0.75rem" : "1.25rem",
+            fontSize: "0.85rem",
+            alignItems: isMobile ? "flex-start" : "center",
+            flexDirection: isMobile ? "column" : "row",
+            width: isMobile ? "100%" : "auto",
+            paddingTop: isMobile ? "0.5rem" : 0,
+          }}
+        >
           {NAV_ITEMS.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => isMobile && setMenuOpen(false)}
                 style={{
                   color: active ? "#1db954" : "#888",
                   fontWeight: active ? 600 : 400,
                   transition: "color 0.15s",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.label}
@@ -64,9 +111,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SignOutButton />
         </nav>
       </header>
-      <main style={{ maxWidth: 1100, margin: "0 auto", padding: "2rem" }}>
-        {children}
-      </main>
+      <main>{children}</main>
     </div>
   );
 }

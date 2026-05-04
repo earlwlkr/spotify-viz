@@ -1,5 +1,7 @@
 "use client";
 
+import { useContainerSize } from "@/hooks/useContainerSize";
+
 interface LinePoint {
   x: number;
   y: number;
@@ -14,8 +16,16 @@ interface Props {
   height?: number;
 }
 
-export default function TimelineChart({ data, xLabel = "Time", yLabel = "Value", width = 700, height = 300 }: Props) {
-  const padding = 48;
+export default function TimelineChart({ data, xLabel = "Time", yLabel = "Value", width: propWidth, height: propHeight }: Props) {
+  const { ref, width: measuredW, height: measuredH } = useContainerSize(2.2, 220);
+  const width = propWidth ?? measuredW;
+  const height = propHeight ?? measuredH;
+
+  if (width === 0 || data.length === 0) {
+    return <div ref={ref} style={{ width: "100%", height: 220, background: "#0f0f0f", borderRadius: 8 }} />;
+  }
+
+  const padding = 40;
   const chartW = width - padding * 2;
   const chartH = height - padding * 2;
 
@@ -38,20 +48,20 @@ export default function TimelineChart({ data, xLabel = "Time", yLabel = "Value",
     ` L ${scaleX(data[data.length - 1].x)} ${height - padding} L ${scaleX(data[0].x)} ${height - padding} Z`;
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
-      <svg width={width} height={height} style={{ background: "#0f0f0f", borderRadius: 8 }}>
+    <div ref={ref} style={{ position: "relative", width: "100%" }}>
+      <svg width={width} height={height} style={{ background: "#0f0f0f", borderRadius: 8, maxWidth: "100%", display: "block" }}>
         <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#333" />
         <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#333" />
         <text x={width / 2} y={height - 8} fill="#888" fontSize={12} textAnchor="middle">
           {xLabel}
         </text>
         <text
-          x={16}
+          x={14}
           y={height / 2}
           fill="#888"
           fontSize={12}
           textAnchor="middle"
-          transform={`rotate(-90, 16, ${height / 2})`}
+          transform={`rotate(-90, 14, ${height / 2})`}
         >
           {yLabel}
         </text>
@@ -60,7 +70,7 @@ export default function TimelineChart({ data, xLabel = "Time", yLabel = "Value",
         <path d={pathD} fill="none" stroke="#1db954" strokeWidth={2} />
 
         {data.map((d, i) => (
-          <circle key={i} cx={scaleX(d.x)} cy={scaleY(d.y)} r={4} fill="#1db954" />
+          <circle key={i} cx={scaleX(d.x)} cy={scaleY(d.y)} r={3} fill="#1db954" />
         ))}
       </svg>
     </div>

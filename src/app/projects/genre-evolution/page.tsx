@@ -58,15 +58,15 @@ export default async function GenreEvolutionPage() {
       <div style={{ display: "grid", gap: "2rem", marginBottom: "2rem" }}>
         <div>
           <h3 style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "1rem", color: "#1db954" }}>4 Weeks</h3>
-          <BarChart data={shortData} width={700} height={260} />
+          <BarChart data={shortData} />
         </div>
         <div>
           <h3 style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "1rem", color: "#3b82f6" }}>6 Months</h3>
-          <BarChart data={mediumData} width={700} height={260} />
+          <BarChart data={mediumData} />
         </div>
         <div>
           <h3 style={{ marginBottom: "0.5rem", fontWeight: 600, fontSize: "1rem", color: "#f59e0b" }}>All Time</h3>
-          <BarChart data={longData} width={700} height={260} />
+          <BarChart data={longData} />
         </div>
       </div>
 
