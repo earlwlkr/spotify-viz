@@ -19,6 +19,14 @@ export function getRedirectUri(origin: string) {
   return `${origin}/api/auth/callback/spotify`;
 }
 
+export function getAppOrigin() {
+  return APP_ORIGIN;
+}
+
+export function useSecureCookies() {
+  return APP_ORIGIN.startsWith("https://");
+}
+
 export function getAuthUrl(state: string, redirectUri = DEFAULT_REDIRECT_URI) {
   const params = new URLSearchParams({
     response_type: "code",
@@ -30,6 +38,27 @@ export function getAuthUrl(state: string, redirectUri = DEFAULT_REDIRECT_URI) {
   return `${SPOTIFY_AUTH_URL}?${params.toString()}`;
 }
 
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  retries = 3
+): Promise<Response> {
+  let lastErr: Error | undefined;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, init);
+      return res;
+    } catch (err) {
+      lastErr = err instanceof Error ? err : new Error(String(err));
+      if (i < retries - 1) {
+        const delay = 500 * (i + 1);
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
+  }
+  throw lastErr ?? new Error("Network request failed after retries");
+}
+
 export async function exchangeCode(code: string, redirectUri = DEFAULT_REDIRECT_URI) {
   const body = new URLSearchParams({
     grant_type: "authorization_code",
@@ -39,7 +68,7 @@ export async function exchangeCode(code: string, redirectUri = DEFAULT_REDIRECT_
     client_secret: CLIENT_SECRET,
   });
 
-  const res = await fetch(SPOTIFY_TOKEN_URL, {
+  const res = await fetchWithRetry(SPOTIFY_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
@@ -62,7 +91,7 @@ export async function refreshAccessToken(refreshToken: string) {
     client_secret: CLIENT_SECRET,
   });
 
-  const res = await fetch(SPOTIFY_TOKEN_URL, {
+  const res = await fetchWithRetry(SPOTIFY_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,

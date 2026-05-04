@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { refreshAccessToken } from "./auth";
+import { refreshAccessToken, useSecureCookies } from "./auth";
 
 const API_BASE = "https://api.spotify.com/v1";
 
@@ -16,14 +16,14 @@ async function getValidToken(): Promise<string> {
     accessToken = refreshed.access_token;
     cookieStore.set("spotify_access_token", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: useSecureCookies(),
       maxAge: refreshed.expires_in,
       path: "/",
     });
     cookieStore.set(
       "spotify_expires_at",
       String(Date.now() + refreshed.expires_in * 1000),
-      { httpOnly: true, secure: process.env.NODE_ENV === "production", path: "/" }
+      { httpOnly: true, secure: useSecureCookies(), path: "/" }
     );
   }
 
@@ -51,12 +51,29 @@ export interface Track {
   name: string;
   artists: { name: string }[];
   album: { images: { url: string; width: number; height: number }[] };
-  duration_ms: number;
-  popularity: number;
+  duration_ms?: number;
+  popularity?: number;
+  external_ids?: { isrc?: string };
+}
+
+export interface AudioFeatures {
+  id: string;
+  danceability: number;
+  energy: number;
+  valence: number;
+  tempo: number;
+  acousticness: number;
+  instrumentalness: number;
 }
 
 export interface TopTracksResponse {
   items: Track[];
+}
+
+export interface AudioFeaturesResponse {
+  audio_features: (AudioFeatures | null)[];
+  estimated?: boolean;
+  acousticBrainz?: boolean;
 }
 
 // --- Helpers ---
@@ -68,6 +85,17 @@ export function getTopTracks(
   return spotifyFetch<TopTracksResponse>(`/me/top/tracks?time_range=${timeRange}&limit=${limit}`);
 }
 
+// Fast metadata-only estimates for immediate server-side render.
+// AcousticBrainz enrichment happens progressively on the client via /api/audio-features.
+export async function getAudioFeatures(tracks: Track[]): Promise<AudioFeaturesResponse> {
+  const { generateEstimatedFeatures } = await import("./acousticbrainz");
+  return {
+    audio_features: tracks.map((t) => generateEstimatedFeatures(t)),
+    estimated: true,
+    acousticBrainz: false,
+  };
+}
+
 export interface RecentlyPlayedItem {
   track: Track;
   played_at: string;
@@ -77,8 +105,34 @@ export interface RecentlyPlayedResponse {
   items: RecentlyPlayedItem[];
 }
 
-export function getRecentlyPlayed(limit = 50) {
-  return spotifyFetch<RecentlyPlayedResponse>(`/me/player/recently-played?limit=${limit}`);
+export async function getRecentlyPlayed(
+  limit = 50,
+  minDate?: string
+): Promise<RecentlyPlayedResponse> {
+  const allItems: RecentlyPlayedItem[] = [];
+  let before: string | undefined;
+  const MAX_PAGES = 5;
+
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (before) params.set("before", before);
+
+    const res = await spotifyFetch<RecentlyPlayedResponse & {
+      cursors?: { before?: string; after?: string };
+    }>(`/me/player/recently-played?${params.toString()}`);
+
+    allItems.push(...res.items);
+
+    if (minDate && res.items.length > 0) {
+      const oldest = res.items[res.items.length - 1].played_at.slice(0, 10);
+      if (oldest <= minDate) break;
+    }
+
+    if (!res.cursors?.before || res.items.length < limit) break;
+    before = res.cursors.before;
+  }
+
+  return { items: allItems };
 }
 
 export interface Artist {
@@ -97,4 +151,17 @@ export function getTopArtists(
   limit = 50
 ) {
   return spotifyFetch<TopArtistsResponse>(`/me/top/artists?time_range=${timeRange}&limit=${limit}`);
+}
+
+export interface RecommendationTrack extends Track {
+  preview_url: string | null;
+}
+
+export interface RecommendationsResponse {
+  tracks: RecommendationTrack[];
+}
+
+export function getRecommendations(seedTrackIds: string[], limit = 20) {
+  const seeds = seedTrackIds.slice(0, 5).join(",");
+  return spotifyFetch<RecommendationsResponse>(`/recommendations?seed_tracks=${seeds}&limit=${limit}`);
 }

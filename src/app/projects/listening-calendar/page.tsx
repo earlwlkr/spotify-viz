@@ -9,7 +9,13 @@ export default async function ListeningCalendarPage() {
     redirect("/");
   }
 
-  const recent = await getRecentlyPlayed(50);
+  // Compute the date 28 days ago so pagination knows when to stop
+  const today = new Date();
+  const minDate = new Date(today);
+  minDate.setDate(minDate.getDate() - 27);
+  const minDateIso = minDate.toISOString().slice(0, 10);
+
+  const recent = await getRecentlyPlayed(50, minDateIso);
 
   const counts = new Map<string, number>();
   for (const item of recent.items) {
@@ -17,7 +23,6 @@ export default async function ListeningCalendarPage() {
     counts.set(date, (counts.get(date) || 0) + 1);
   }
 
-  const today = new Date();
   const data = [];
   for (let i = 27; i >= 0; i--) {
     const d = new Date(today);

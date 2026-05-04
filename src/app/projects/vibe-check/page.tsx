@@ -1,7 +1,7 @@
-import { getTopTracks, getTopArtists, getRecentlyPlayed } from "@/lib/spotify";
+import { getTopTracks, getTopArtists, getAudioFeatures, getRecentlyPlayed } from "@/lib/spotify";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import BarMeter from "@/components/viz/BarMeter";
+import ProgressiveVibeCheck from "@/components/ProgressiveVibeCheck";
 
 export default async function VibeCheckPage() {
   const cookieStore = await cookies();
@@ -15,15 +15,9 @@ export default async function VibeCheckPage() {
     getRecentlyPlayed(50),
   ]);
 
-  const avgPopularity =
-    topTracks.items.reduce((sum, track) => sum + track.popularity, 0) / topTracks.items.length / 100;
-  const avgDuration =
-    topTracks.items.reduce((sum, track) => sum + track.duration_ms, 0) / topTracks.items.length;
-  const recentUniqueArtists = new Set(
-    recent.items.flatMap((item) => item.track.artists.map((artist) => artist.name))
-  ).size;
-  const topArtistGenreCount = new Set(topArtists.items.flatMap((artist) => artist.genres)).size;
-  const totalMs = recent.items.reduce((sum, item) => sum + item.track.duration_ms, 0);
+  const features = await getAudioFeatures(topTracks.items);
+
+  const totalMs = recent.items.reduce((sum, item) => sum + item.track.duration_ms! || 0, 0);
   const hours = Math.round((totalMs / 1000 / 60 / 60) * 10) / 10;
 
   return (
@@ -32,13 +26,10 @@ export default async function VibeCheckPage() {
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>Your listening profile at a glance.</p>
 
       <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
-        <div style={{ background: "#141414", borderRadius: 12, padding: "1.25rem", border: "1px solid #1f1f1f" }}>
-          <h3 style={{ marginBottom: "1rem", fontWeight: 600 }}>Library Signals</h3>
-          <BarMeter label="Average popularity" value={avgPopularity} color="#1db954" />
-          <BarMeter label="Artist variety" value={Math.min(recentUniqueArtists / 50, 1)} color="#3b82f6" />
-          <BarMeter label="Genre variety" value={Math.min(topArtistGenreCount / 80, 1)} color="#a855f7" />
-          <BarMeter label="Track length" value={Math.min(avgDuration / 300000, 1)} color="#f59e0b" />
-        </div>
+        <ProgressiveVibeCheck
+          tracks={topTracks.items}
+          initialFeatures={features.audio_features.filter(Boolean) as NonNullable<typeof features.audio_features[0]>[]}
+        />
 
         {/* Top artists */}
         <div style={{ background: "#141414", borderRadius: 12, padding: "1.25rem", border: "1px solid #1f1f1f" }}>
