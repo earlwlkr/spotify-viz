@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import Link from "next/link";
+import ProjectCard from "@/components/ProjectCard";
 
 export default async function Dashboard() {
   const cookieStore = await cookies();
@@ -56,31 +56,13 @@ export default async function Dashboard() {
 
       <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
         {projects.map((p) => (
-          <Link
+          <ProjectCard
             key={p.slug}
             href={isAuthed ? `/projects/${p.slug}` : "#"}
-            style={{
-              display: "block",
-              padding: "1.5rem",
-              borderRadius: 12,
-              background: "#141414",
-              border: "1px solid #1f1f1f",
-              opacity: isAuthed ? 1 : 0.4,
-              pointerEvents: isAuthed ? "auto" : "none",
-              transition: "border-color 0.2s, transform 0.15s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "#333";
-              (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "#1f1f1f";
-              (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-            }}
-          >
-            <h3 style={{ marginBottom: "0.4rem", fontWeight: 600 }}>{p.name}</h3>
-            <p style={{ color: "#888", fontSize: "0.85rem", lineHeight: 1.5 }}>{p.desc}</p>
-          </Link>
+            name={p.name}
+            desc={p.desc}
+            disabled={!isAuthed}
+          />
         ))}
       </div>
     </div>
