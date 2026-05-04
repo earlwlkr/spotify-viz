@@ -148,6 +148,7 @@ export interface Artist {
   name: string;
   genres: string[];
   images: { url: string }[];
+  popularity?: number;
 }
 
 export interface TopArtistsResponse {

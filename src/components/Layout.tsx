@@ -1,9 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import SignOutButton from "./SignOutButton";
 
+const NAV_ITEMS = [
+  { href: "/projects/vibe-check", label: "Vibe" },
+  { href: "/projects/mood-weather", label: "Mood" },
+  { href: "/projects/audio-scatter", label: "Scatter" },
+  { href: "/projects/listening-calendar", label: "Calendar" },
+  { href: "/projects/genre-galaxy", label: "Genres" },
+  { href: "/projects/sonic-signature", label: "Radar" },
+  { href: "/projects/temporal-patterns", label: "Patterns" },
+  { href: "/projects/hipster-score", label: "Hipster" },
+  { href: "/projects/mood-journey", label: "Journey" },
+  { href: "/projects/genre-evolution", label: "Evolution" },
+  { href: "/projects/discovery-roulette", label: "Discover" },
+  { href: "/projects/listening-efficiency", label: "Efficiency" },
+];
+
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
     <div style={{ minHeight: "100vh", background: "#0a0a0a", color: "#e5e5e5" }}>
       <header
@@ -26,26 +44,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           Spotify Viz
         </Link>
-        <nav style={{ display: "flex", gap: "1.5rem", fontSize: "0.9rem", alignItems: "center" }}>
-          <Link href="/projects/vibe-check" style={{ color: "#888" }}>
-            Vibe
-          </Link>
-          <Link href="/projects/mood-weather" style={{ color: "#888" }}>
-            Mood
-          </Link>
-          <Link href="/projects/audio-scatter" style={{ color: "#888" }}>
-            Scatter
-          </Link>
-          <Link href="/projects/listening-calendar" style={{ color: "#888" }}>
-            Calendar
-          </Link>
-          <Link href="/projects/genre-galaxy" style={{ color: "#888" }}>
-            Genres
-          </Link>
+        <nav style={{ display: "flex", gap: "1.25rem", fontSize: "0.85rem", alignItems: "center" }}>
+          {NAV_ITEMS.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                style={{
+                  color: active ? "#1db954" : "#888",
+                  fontWeight: active ? 600 : 400,
+                  transition: "color 0.15s",
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
           <SignOutButton />
         </nav>
       </header>
-      <main style={{ maxWidth: 900, margin: "0 auto", padding: "2rem" }}>
+      <main style={{ maxWidth: 1100, margin: "0 auto", padding: "2rem" }}>
         {children}
       </main>
     </div>

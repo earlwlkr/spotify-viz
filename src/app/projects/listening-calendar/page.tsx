@@ -41,7 +41,9 @@ export default async function ListeningCalendarPage() {
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>
         Last 28 days of listening activity.
       </p>
-      <Heatmap data={data} />
+      <div style={{ width: "100%", overflowX: "auto" }}>
+        <Heatmap data={data} width={900} />
+      </div>
     </div>
   );
 }

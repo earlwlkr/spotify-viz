@@ -38,8 +38,8 @@ function formatISO(d: Date): string {
 
 export default function Heatmap({ data, width = 600 }: Props) {
   const maxCount = Math.max(...data.map((d) => d.count), 1);
-  const cellSize = Math.min(18, Math.floor((width - 60) / 7));
-  const gap = 3;
+  const cellSize = Math.min(22, Math.floor((width - 60) / 7));
+  const gap = 4;
 
   const colorForCount = (count: number, outOfRange: boolean) => {
     if (outOfRange) return "#0f0f0f";
@@ -83,11 +83,11 @@ export default function Heatmap({ data, width = 600 }: Props) {
   const svgHeight = 7 * (cellSize + gap) + 30;
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <div style={{ position: "relative", width: "100%", overflowX: "auto" }}>
       <svg
         width={svgWidth}
         height={svgHeight}
-        style={{ background: "#0f0f0f", borderRadius: 8, padding: 12 }}
+        style={{ background: "#0f0f0f", borderRadius: 8, padding: 12, display: "block", margin: "0 auto" }}
       >
         {/* Day labels */}
         {DAY_LABELS.map((day, i) => (
