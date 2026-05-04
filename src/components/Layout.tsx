@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import SignOutButton from "./SignOutButton";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,7 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           Spotify Viz
         </Link>
-        <nav style={{ display: "flex", gap: "1.5rem", fontSize: "0.9rem" }}>
+        <nav style={{ display: "flex", gap: "1.5rem", fontSize: "0.9rem", alignItems: "center" }}>
           <Link href="/projects/vibe-check" style={{ color: "#888" }}>
             Vibe
           </Link>
@@ -41,6 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Link href="/projects/genre-galaxy" style={{ color: "#888" }}>
             Genres
           </Link>
+          <SignOutButton />
         </nav>
       </header>
       <main style={{ maxWidth: 900, margin: "0 auto", padding: "2rem" }}>
