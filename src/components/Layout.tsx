@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import SignOutButton from "./SignOutButton";
 
@@ -32,7 +31,6 @@ function useIsMobile() {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   const isMobile = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -75,7 +73,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }}
             aria-label="Toggle menu"
           >
-            {menuOpen ? "✕" : "☰"}
+            {menuOpen ? "\u2715" : "\u2630"}
           </button>
         )}
 
@@ -90,24 +88,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             paddingTop: isMobile ? "0.5rem" : 0,
           }}
         >
-          {NAV_ITEMS.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => isMobile && setMenuOpen(false)}
-                style={{
-                  color: active ? "#1db954" : "#888",
-                  fontWeight: active ? 600 : 400,
-                  transition: "color 0.15s",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => isMobile && setMenuOpen(false)}
+              style={{
+                color: "#888",
+                transition: "color 0.15s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
           <SignOutButton />
         </nav>
       </header>
