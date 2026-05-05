@@ -5,17 +5,11 @@ import { useState, useEffect } from "react";
 import SignOutButton from "./SignOutButton";
 
 const NAV_ITEMS = [
-  { href: "/projects/vibe-check", label: "Vibe" },
-  { href: "/projects/mood-weather", label: "Mood" },
-  { href: "/projects/audio-scatter", label: "Scatter" },
   { href: "/projects/listening-calendar", label: "Calendar" },
   { href: "/projects/genre-galaxy", label: "Genres" },
-  { href: "/projects/sonic-signature", label: "Radar" },
   { href: "/projects/temporal-patterns", label: "Patterns" },
   { href: "/projects/hipster-score", label: "Hipster" },
-  { href: "/projects/mood-journey", label: "Journey" },
   { href: "/projects/genre-evolution", label: "Evolution" },
-  { href: "/projects/discovery-roulette", label: "Discover" },
   { href: "/projects/listening-efficiency", label: "Efficiency" },
 ];
 

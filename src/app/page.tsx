@@ -6,17 +6,11 @@ export default async function Dashboard() {
   const isAuthed = !!cookieStore.get("spotify_access_token")?.value;
 
   const projects = [
-    { slug: "vibe-check", name: "Vibe Check", desc: "Your listening profile at a glance" },
-    { slug: "mood-weather", name: "Mood Weather", desc: "Energy vs valence of your top tracks" },
-    { slug: "audio-scatter", name: "Audio Scatter", desc: "Danceability vs tempo, colored by energy" },
     { slug: "listening-calendar", name: "Listening Calendar", desc: "Last 28 days of listening activity" },
     { slug: "genre-galaxy", name: "Genre Galaxy", desc: "Genres from your top artists" },
-    { slug: "sonic-signature", name: "Sonic Signature", desc: "Your 6-dimensional audio profile" },
     { slug: "temporal-patterns", name: "Temporal Patterns", desc: "When do you listen? Hour & day breakdown" },
     { slug: "hipster-score", name: "Hipster Score", desc: "Mainstream vs underground analysis" },
-    { slug: "mood-journey", name: "Mood Journey", desc: "Energy & valence arc of recent plays" },
     { slug: "genre-evolution", name: "Genre Evolution", desc: "How your taste shifts over time" },
-    { slug: "discovery-roulette", name: "Discovery Roulette", desc: "Recommendations from your top tracks" },
     { slug: "listening-efficiency", name: "Listening Efficiency", desc: "Deep dive stats on your habits" },
   ];
 

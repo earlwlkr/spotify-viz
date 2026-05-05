@@ -64,24 +64,8 @@ export interface Track {
   external_ids?: { isrc?: string };
 }
 
-export interface AudioFeatures {
-  id: string;
-  danceability: number;
-  energy: number;
-  valence: number;
-  tempo: number;
-  acousticness: number;
-  instrumentalness: number;
-}
-
 export interface TopTracksResponse {
   items: Track[];
-}
-
-export interface AudioFeaturesResponse {
-  audio_features: (AudioFeatures | null)[];
-  estimated?: boolean;
-  acousticBrainz?: boolean;
 }
 
 // --- Helpers ---
@@ -91,17 +75,6 @@ export function getTopTracks(
   limit = 50
 ) {
   return spotifyFetch<TopTracksResponse>(`/me/top/tracks?time_range=${timeRange}&limit=${limit}`);
-}
-
-// Fast metadata-only estimates for immediate server-side render.
-// AcousticBrainz enrichment happens progressively on the client via /api/audio-features.
-export async function getAudioFeatures(tracks: Track[]): Promise<AudioFeaturesResponse> {
-  const { generateEstimatedFeatures } = await import("./acousticbrainz");
-  return {
-    audio_features: tracks.map((t) => generateEstimatedFeatures(t)),
-    estimated: true,
-    acousticBrainz: false,
-  };
 }
 
 export interface RecentlyPlayedItem {
@@ -162,15 +135,4 @@ export function getTopArtists(
   return spotifyFetch<TopArtistsResponse>(`/me/top/artists?time_range=${timeRange}&limit=${limit}`);
 }
 
-export interface RecommendationTrack extends Track {
-  preview_url: string | null;
-}
 
-export interface RecommendationsResponse {
-  tracks: RecommendationTrack[];
-}
-
-export function getRecommendations(seedTrackIds: string[], limit = 20) {
-  const seeds = seedTrackIds.slice(0, 5).join(",");
-  return spotifyFetch<RecommendationsResponse>(`/recommendations?seed_tracks=${seeds}&limit=${limit}`);
-}
