@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import SignOutButton from "./SignOutButton";
 
 const NAV_ITEMS = [
+  { href: "/projects/dashboard", label: "Dashboard" },
   { href: "/projects/listening-calendar", label: "Calendar" },
   { href: "/projects/genre-galaxy", label: "Genres" },
   { href: "/projects/temporal-patterns", label: "Patterns" },

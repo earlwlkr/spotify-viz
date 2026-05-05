@@ -6,6 +6,7 @@ export default async function Dashboard() {
   const isAuthed = !!cookieStore.get("spotify_access_token")?.value;
 
   const projects = [
+    { slug: "dashboard", name: "Dashboard", desc: "Your listening profile at a glance" },
     { slug: "listening-calendar", name: "Listening Calendar", desc: "Last 28 days of listening activity" },
     { slug: "genre-galaxy", name: "Genre Galaxy", desc: "Genres from your top artists" },
     { slug: "temporal-patterns", name: "Temporal Patterns", desc: "When do you listen? Hour & day breakdown" },
