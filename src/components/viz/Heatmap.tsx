@@ -48,7 +48,7 @@ export default function Heatmap({ data, width: propWidth }: Props) {
 
   const maxCount = Math.max(...data.map((d) => d.count), 1);
   const gap = 3;
-  const labelWidth = 28;
+  const labelWidth = 38;
   const availableW = Math.max(containerWidth - labelWidth - 16, 0);
 
   const counts = new Map(data.map((d) => [d.date, d.count]));
@@ -108,7 +108,7 @@ export default function Heatmap({ data, width: propWidth }: Props) {
               x={2}
               y={18 + i * (cellSize + gap) + cellSize / 2 + 3}
               fill="#666"
-              fontSize={Math.max(8, cellSize - 2)}
+              fontSize={10}
             >
               {day}
             </text>
