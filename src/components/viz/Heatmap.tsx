@@ -47,8 +47,8 @@ export default function Heatmap({ data, width: propWidth }: Props) {
   }
 
   const maxCount = Math.max(...data.map((d) => d.count), 1);
-  const gap = 4;
-  const labelWidth = 32;
+  const gap = 3;
+  const labelWidth = 28;
   const availableW = Math.max(containerWidth - labelWidth - 16, 0);
 
   const counts = new Map(data.map((d) => [d.date, d.count]));
@@ -64,7 +64,7 @@ export default function Heatmap({ data, width: propWidth }: Props) {
   const totalWeeks =
     Math.round((endMonday.getTime() - startMonday.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
 
-  const cellSize = Math.max(10, Math.min(56, Math.floor((availableW - (totalWeeks - 1) * gap) / totalWeeks)));
+  const cellSize = Math.max(10, Math.min(18, Math.floor((availableW - (totalWeeks - 1) * gap) / totalWeeks)));
   const svgWidth = labelWidth + totalWeeks * (cellSize + gap) + 12;
   const svgHeight = 7 * (cellSize + gap) + 24;
 
