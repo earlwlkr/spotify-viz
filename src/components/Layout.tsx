@@ -8,10 +8,8 @@ const NAV_ITEMS = [
   { href: "/projects/dashboard", label: "Dashboard" },
   { href: "/projects/listening-calendar", label: "Calendar" },
   { href: "/projects/genre-galaxy", label: "Genres" },
-  { href: "/projects/temporal-patterns", label: "Patterns" },
   { href: "/projects/hipster-score", label: "Hipster" },
   { href: "/projects/genre-evolution", label: "Evolution" },
-  { href: "/projects/listening-efficiency", label: "Efficiency" },
 ];
 
 function useIsMobile() {
