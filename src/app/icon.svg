@@ -1,31 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Spotify Viz">
   <rect width="64" height="64" rx="14" fill="#0a0a0a"/>
-  <circle cx="32" cy="32" r="22" fill="#111" stroke="#1db954" stroke-width="4"/>
-  <circle cx="32" cy="32" r="6" fill="#1db954"/>
+  <circle cx="32" cy="32" r="24" fill="#1db954"/>
+  <rect x="17" y="34" width="6" height="13" rx="3" fill="#0a0a0a"/>
+  <rect x="26" y="27" width="6" height="20" rx="3" fill="#0a0a0a"/>
+  <rect x="35" y="38" width="6" height="9" rx="3" fill="#0a0a0a"/>
+  <rect x="44" y="21" width="6" height="26" rx="3" fill="#0a0a0a"/>
   <path
-    d="M19 24c8-3 19-2 27 3"
+    d="M18 29l10-8 10 7 10-13"
     fill="none"
-    stroke="#1db954"
-    stroke-width="4"
+    stroke="#f5f5f5"
+    stroke-width="5"
     stroke-linecap="round"
+    stroke-linejoin="round"
   />
-  <path
-    d="M21 32c7-2 16-1 22 3"
-    fill="none"
-    stroke="#1db954"
-    stroke-width="3"
-    stroke-linecap="round"
-    opacity=".9"
-  />
-  <path
-    d="M23 40c5-1 11 0 16 3"
-    fill="none"
-    stroke="#1db954"
-    stroke-width="3"
-    stroke-linecap="round"
-    opacity=".75"
-  />
-  <rect x="12" y="41" width="4" height="9" rx="2" fill="#e5e5e5"/>
-  <rect x="19" y="36" width="4" height="14" rx="2" fill="#e5e5e5"/>
-  <rect x="26" y="44" width="4" height="6" rx="2" fill="#e5e5e5"/>
+  <circle cx="18" cy="29" r="3" fill="#f5f5f5"/>
+  <circle cx="28" cy="21" r="3" fill="#f5f5f5"/>
+  <circle cx="38" cy="28" r="3" fill="#f5f5f5"/>
+  <circle cx="48" cy="15" r="3" fill="#f5f5f5"/>
 </svg>
