@@ -100,7 +100,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SignOutButton />
         </nav>
       </header>
-      <main>{children}</main>
+      <main style={{ padding: "1rem" }}>{children}</main>
     </div>
   );
 }

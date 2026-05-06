@@ -47,9 +47,9 @@ export default function Heatmap({ data, width: propWidth }: Props) {
   }
 
   const maxCount = Math.max(...data.map((d) => d.count), 1);
-  const gap = 3;
-  const labelWidth = 28;
-  const availableW = containerWidth - labelWidth - 16;
+  const gap = 4;
+  const labelWidth = 32;
+  const availableW = Math.max(containerWidth - labelWidth - 16, 0);
 
   const counts = new Map(data.map((d) => [d.date, d.count]));
 
@@ -64,7 +64,7 @@ export default function Heatmap({ data, width: propWidth }: Props) {
   const totalWeeks =
     Math.round((endMonday.getTime() - startMonday.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
 
-  const cellSize = Math.max(10, Math.min(22, Math.floor((availableW - (totalWeeks - 1) * gap) / totalWeeks)));
+  const cellSize = Math.max(10, Math.min(56, Math.floor((availableW - (totalWeeks - 1) * gap) / totalWeeks)));
   const svgWidth = labelWidth + totalWeeks * (cellSize + gap) + 12;
   const svgHeight = 7 * (cellSize + gap) + 24;
 
@@ -95,41 +95,43 @@ export default function Heatmap({ data, width: propWidth }: Props) {
 
   return (
     <div ref={ref} style={{ width: "100%", overflowX: "auto" }}>
-      <svg
-        width={svgWidth}
-        height={svgHeight}
-        style={{ background: "#0f0f0f", borderRadius: 8, padding: 10, display: "block", margin: "0 auto" }}
-      >
-        {/* Day labels */}
-        {DAY_LABELS.map((day, i) => (
-          <text
-            key={day}
-            x={2}
-            y={18 + i * (cellSize + gap) + cellSize / 2 + 3}
-            fill="#666"
-            fontSize={Math.max(8, cellSize - 2)}
-          >
-            {day}
-          </text>
-        ))}
-
-        {grid.map((week, wi) =>
-          week.map((day, di) => (
-            <rect
-              key={`${wi}-${di}`}
-              x={labelWidth + wi * (cellSize + gap)}
-              y={14 + di * (cellSize + gap)}
-              width={cellSize}
-              height={cellSize}
-              rx={2}
-              fill={colorForCount(day.count, day.outOfRange)}
-              opacity={day.outOfRange ? 0.2 : 1}
+      <div style={{ background: "#0f0f0f", borderRadius: 8, padding: 10, display: "inline-block" }}>
+        <svg
+          width={svgWidth}
+          height={svgHeight}
+          style={{ display: "block" }}
+        >
+          {/* Day labels */}
+          {DAY_LABELS.map((day, i) => (
+            <text
+              key={day}
+              x={2}
+              y={18 + i * (cellSize + gap) + cellSize / 2 + 3}
+              fill="#666"
+              fontSize={Math.max(8, cellSize - 2)}
             >
-              <title>{day.outOfRange ? day.date : `${day.date}: ${day.count} plays`}</title>
-            </rect>
-          ))
-        )}
-      </svg>
+              {day}
+            </text>
+          ))}
+
+          {grid.map((week, wi) =>
+            week.map((day, di) => (
+              <rect
+                key={`${wi}-${di}`}
+                x={labelWidth + wi * (cellSize + gap)}
+                y={14 + di * (cellSize + gap)}
+                width={cellSize}
+                height={cellSize}
+                rx={2}
+                fill={colorForCount(day.count, day.outOfRange)}
+                opacity={day.outOfRange ? 0.2 : 1}
+              >
+                <title>{day.outOfRange ? day.date : `${day.date}: ${day.count} plays`}</title>
+              </rect>
+            ))
+          )}
+        </svg>
+      </div>
     </div>
   );
 }
