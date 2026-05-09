@@ -41,6 +41,10 @@ export default async function GenreGalaxyPage({
       <p style={{ color: "#888", marginBottom: "1rem" }}>
         Genres from your top artists, sized by artist count.
       </p>
+      <div style={{ background: "#101010", border: "1px solid #262626", borderRadius: 8, padding: "0.9rem", marginBottom: "1rem", color: "#aaa", fontSize: "0.85rem" }}>
+        Heads up: `GET /me/top/artists` is still available, but Spotify marks the artist `genres` field as deprecated.
+        This visualization gracefully becomes empty if Spotify stops returning it.
+      </div>
       <TimeRangeSelector />
       <BubblePack data={bubbles} />
     </div>

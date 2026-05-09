@@ -6,10 +6,14 @@ import SignOutButton from "./SignOutButton";
 
 const NAV_ITEMS = [
   { href: "/projects/dashboard", label: "Dashboard" },
+  { href: "/projects/library-timeline", label: "Library" },
+  { href: "/projects/playlist-atlas", label: "Playlists" },
+  { href: "/projects/now-playing", label: "Now" },
   { href: "/projects/listening-calendar", label: "Calendar" },
   { href: "/projects/genre-galaxy", label: "Genres" },
-  { href: "/projects/hipster-score", label: "Hipster" },
+  { href: "/projects/hipster-score", label: "Spread" },
   { href: "/projects/genre-evolution", label: "Evolution" },
+  { href: "/projects/api-safety", label: "API Safety" },
 ];
 
 function useIsMobile() {
@@ -73,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav
           style={{
             display: isMobile ? (menuOpen ? "flex" : "none") : "flex",
-            gap: isMobile ? "0.75rem" : "1.25rem",
+            gap: isMobile ? "0.75rem" : "0.9rem",
             fontSize: "0.85rem",
             alignItems: isMobile ? "flex-start" : "center",
             flexDirection: isMobile ? "column" : "row",

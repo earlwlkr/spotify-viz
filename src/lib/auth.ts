@@ -13,6 +13,8 @@ export const SCOPES = [
   "playlist-read-private",
   "user-read-recently-played",
   "user-library-read",
+  "user-read-currently-playing",
+  "user-read-playback-state",
 ];
 
 export function getRedirectUri(origin: string) {

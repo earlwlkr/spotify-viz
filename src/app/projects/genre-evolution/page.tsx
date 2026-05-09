@@ -54,6 +54,10 @@ export default async function GenreEvolutionPage() {
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>
         How your top genres shift across short, medium, and long term.
       </p>
+      <div style={{ background: "#101010", border: "1px solid #262626", borderRadius: 8, padding: "0.9rem", marginBottom: "1.5rem", color: "#aaa", fontSize: "0.85rem" }}>
+        API note: top artists are supported, but the `genres` field on artist objects is deprecated. Treat this page as a
+        legacy visualization that may lose detail as Spotify removes deprecated fields.
+      </div>
 
       <div style={{ display: "grid", gap: "2rem", marginBottom: "2rem" }}>
         <div>
