@@ -16,14 +16,6 @@ A collection of data visualizations built on the Spotify Web API.
 3. Use helpers from `src/lib/spotify.ts` to fetch data.
 4. Drop in components from `src/components/viz/` or build your own.
 
-## Spotify API safety
-
-- Prefer current endpoints such as `/me/top/{type}`, `/me/tracks`, `/me/albums`, `/me/playlists`, `/playlists/{id}/items`, `/me/player/recently-played`, and `/me/player/currently-playing`.
-- Check response fields too: a non-deprecated endpoint can still include deprecated or removed fields. Avoid building new features on fields such as `popularity`, `available_markets`, `linked_from`, preview URLs, user country/email/product, or artist `genres`.
-- Use URI-based library endpoints (`/me/library` and `/me/library/contains`) instead of older type-specific save/remove/follow/contains routes.
-- Use `/playlists/{id}/items` instead of deprecated playlist `/tracks` routes.
-- If you were already signed in before these scopes changed, sign out and reconnect so Spotify grants playback-read scopes for Now Playing.
-
 ## Auth flow
 
 - `/api/auth/spotify` → redirects to Spotify

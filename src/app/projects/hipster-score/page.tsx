@@ -44,7 +44,7 @@ export default async function HipsterScorePage({
     <div>
       <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 700 }}>Taste Spread</h1>
       <p style={{ color: "#888", marginBottom: "1rem" }}>
-        A non-deprecated replacement for the old popularity-based score.
+        How broad your current rotation feels.
       </p>
       <TimeRangeSelector />
 
@@ -100,10 +100,6 @@ export default async function HipsterScorePage({
             </div>
           ))}
         </div>
-      </div>
-      <div style={{ background: "#101010", border: "1px solid #262626", borderRadius: 8, padding: "1rem", marginTop: "1.5rem", color: "#aaa", fontSize: "0.85rem" }}>
-        This page intentionally avoids Spotify&apos;s deprecated `popularity` fields. The score uses rank, artist spread,
-        duration, album type, and explicit flags from the current top-items response instead.
       </div>
     </div>
   );

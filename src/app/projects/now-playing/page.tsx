@@ -25,13 +25,8 @@ export default async function NowPlayingPage() {
     <div>
       <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 700 }}>Now Playing</h1>
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>
-        Live playback metadata from Spotify&apos;s current-player endpoint.
+        What you are listening to right now.
       </p>
-
-      <div style={{ background: "#101010", border: "1px solid #262626", borderRadius: 8, padding: "0.9rem", marginBottom: "1.5rem", color: "#aaa", fontSize: "0.85rem" }}>
-        This view uses `GET /me/player/currently-playing`. It avoids preview URLs, audio analysis, audio features,
-        playback control actions, and fields Spotify marks as removed or deprecated.
-      </div>
 
       {!current || !track ? (
         <div style={{ background: "#141414", border: "1px solid #1f1f1f", borderRadius: 8, padding: "2rem", textAlign: "center" }}>

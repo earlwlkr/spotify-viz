@@ -78,8 +78,6 @@ export interface Track {
   duration_ms?: number;
   explicit?: boolean;
   is_local?: boolean;
-  // Deprecated by Spotify in 2026. Keep optional for older responses, but do not build new features on it.
-  popularity?: number;
   external_ids?: { isrc?: string };
 }
 
@@ -152,11 +150,7 @@ export interface Artist {
   name: string;
   uri?: string;
   external_urls?: { spotify?: string };
-  // Deprecated by Spotify. Existing genre visualizations should tolerate this disappearing.
-  genres?: string[];
   images: { url: string }[];
-  // Deprecated by Spotify in 2026. Keep optional for older responses, but do not build new features on it.
-  popularity?: number;
 }
 
 export interface TopArtistsResponse {

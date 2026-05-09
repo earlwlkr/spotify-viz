@@ -64,13 +64,8 @@ export default async function PlaylistAtlasPage() {
     <div>
       <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 700 }}>Playlist Atlas</h1>
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>
-        Current-user playlists plus item details from the newer `/playlists/:id/items` endpoint.
+        A map of your own and collaborative playlists.
       </p>
-
-      <div style={{ background: "#101010", border: "1px solid #262626", borderRadius: 8, padding: "0.9rem", marginBottom: "1.5rem", color: "#aaa", fontSize: "0.85rem" }}>
-        Spotify now limits playlist item details to playlists you own or collaborate on. This page skips followed-only
-        playlists for item analysis and avoids the deprecated `/playlists/:id/tracks` route and deprecated `track` field.
-      </div>
 
       <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", marginBottom: "2rem" }}>
         {[

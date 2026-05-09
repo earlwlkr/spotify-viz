@@ -10,10 +10,7 @@ const NAV_ITEMS = [
   { href: "/projects/playlist-atlas", label: "Playlists" },
   { href: "/projects/now-playing", label: "Now" },
   { href: "/projects/listening-calendar", label: "Calendar" },
-  { href: "/projects/genre-galaxy", label: "Genres" },
   { href: "/projects/hipster-score", label: "Spread" },
-  { href: "/projects/genre-evolution", label: "Evolution" },
-  { href: "/projects/api-safety", label: "API Safety" },
 ];
 
 function useIsMobile() {

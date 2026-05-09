@@ -58,7 +58,7 @@ export default async function LibraryTimelinePage() {
     <div>
       <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 700 }}>Library Timeline</h1>
       <p style={{ color: "#888", marginBottom: "1.5rem" }}>
-        Saved tracks and albums using current library read endpoints.
+        How your saved music collection has grown.
       </p>
 
       <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", marginBottom: "2rem" }}>

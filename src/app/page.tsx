@@ -9,12 +9,9 @@ export default async function Dashboard() {
     { slug: "dashboard", name: "Dashboard", desc: "Your listening profile at a glance" },
     { slug: "library-timeline", name: "Library Timeline", desc: "Saved tracks and albums over time" },
     { slug: "playlist-atlas", name: "Playlist Atlas", desc: "Owned and collaborative playlist structure" },
-    { slug: "now-playing", name: "Now Playing", desc: "Live playback metadata without deprecated audio analysis" },
+    { slug: "now-playing", name: "Now Playing", desc: "What you are listening to right now" },
     { slug: "listening-calendar", name: "Listening Calendar", desc: "Last 28 days of listening activity" },
-    { slug: "genre-galaxy", name: "Genre Galaxy", desc: "Genres from your top artists" },
-    { slug: "hipster-score", name: "Taste Spread", desc: "A non-popularity-based taste profile" },
-    { slug: "genre-evolution", name: "Genre Evolution", desc: "How your taste shifts over time" },
-    { slug: "api-safety", name: "API Safety", desc: "Supported endpoints and deprecated field notes" },
+    { slug: "hipster-score", name: "Taste Spread", desc: "How broad your current rotation feels" },
   ];
 
   return (
